@@ -32,6 +32,14 @@ read_file_content(const char *file)
 
         fclose(fp);
     }
+    else
+    {
+        printf("[ERROR] the file '%s' doesn't exists.\n", file);
+    }
+
+    if(content.count == 0) {
+        printf("[ERROR] the file '%s' have no content.\n", file);
+    }
     return content;
 }
 
