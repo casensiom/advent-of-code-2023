@@ -28,6 +28,10 @@ float parser_consume_float(String *data, String *out);
 typedef size_t Integer;
 AC_ARRAY_DEFINE(Integer);
 
+typedef ssize_t SInteger;
+AC_ARRAY_DEFINE(SInteger);
+
 IntegerArray parse_integer_list(String data);
+SIntegerArray parse_signed_integer_list(String data);
 
 #endif

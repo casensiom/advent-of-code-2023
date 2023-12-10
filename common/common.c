@@ -37,7 +37,8 @@ read_file_content(const char *file)
         printf("[ERROR] the file '%s' doesn't exists.\n", file);
     }
 
-    if(content.count == 0) {
+    if (content.count == 0)
+    {
         printf("[ERROR] the file '%s' have no content.\n", file);
     }
     return content;
@@ -131,4 +132,11 @@ parse_integer_list(String data)
 
     AC_ARRAY_DESTROY(list);
     return ret;
+}
+
+SIntegerArray
+parse_signed_integer_list(String data)
+{
+    IntegerArray list = parse_integer_list(data);
+    return (SIntegerArray){.items = (SInteger *)(list.items), .count = (list.count), .capacity = list.capacity};
 }
