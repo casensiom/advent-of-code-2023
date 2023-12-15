@@ -32,6 +32,7 @@ typedef ssize_t SInteger;
 AC_ARRAY_DEFINE(SInteger);
 
 IntegerArray parse_integer_list(String data);
+IntegerArray parse_integer_list_with_delim(String data, char delim);
 SIntegerArray parse_signed_integer_list(String data);
 
 #endif

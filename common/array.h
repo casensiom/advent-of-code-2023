@@ -61,6 +61,22 @@
         }                                                  \
     } while (0)
 
+#define AC_ARRAY_SLICE(INSTANCE, NUM, COPY)          \
+    do                                               \
+    {                                                \
+        (COPY).capacity = 0;                         \
+        if ((NUM) > 0)                               \
+        {                                            \
+            (COPY).items = (INSTANCE).items + (NUM); \
+            (COPY).count = (INSTANCE).count - (NUM); \
+        }                                            \
+        else                                         \
+        {                                            \
+            (COPY).items = (INSTANCE).items;         \
+            (COPY).count = (INSTANCE).count + (NUM); \
+        }                                            \
+    } while (0)
+
 #define AC_ARRAY_CLEAN(INSTANCE)                                                        \
     do                                                                                  \
     {                                                                                   \

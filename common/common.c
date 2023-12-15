@@ -122,7 +122,13 @@ float parser_consume_float(String *data, String *out)
 IntegerArray
 parse_integer_list(String data)
 {
-    StringArray list = string_split(data, ' ');
+    return parse_integer_list_with_delim(data, ' ');
+}
+
+IntegerArray
+parse_integer_list_with_delim(String data, char delim)
+{
+    StringArray list = string_split(data, delim);
     IntegerArray ret = AC_ARRAY_CREATE(Integer, list.count);
 
     for (size_t i = 0; i < list.count; i++)

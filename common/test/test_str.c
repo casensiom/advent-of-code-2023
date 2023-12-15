@@ -29,6 +29,10 @@ main(int argc, char **argv) {
     find_data = string_create("god yzal");
     pos       = string_find(test_data, find_data);
     assert(pos == STRING_NPOS);
+
+    pos = string_find(string_create("1234567890"), string_create("0"));
+    assert(pos == 9);
+
     printf("[ PASS ] creation.\n");
 
     //--

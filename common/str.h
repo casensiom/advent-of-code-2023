@@ -20,8 +20,13 @@ AC_ARRAY_DEFINE(String);
 #define STRING_ARG(str) (int)(str).count, (str).items
 #define STRING_NPOS (size_t)(-1)
 
-size_t string_count(String data, char item);
-StringArray string_split(String data, char delim);             /// requires destroy result
+//size_t string_count(String data, char item);
+#define string_count(data, item) string_count_from(data, item, 0)
+size_t string_count_from(String data, char item, size_t offset);
+
+#define string_split(data, delim) string_split_ex(data, delim, false)
+StringArray string_split_ex(String data, char delim, bool keep_empty);             /// requires destroy result
+
 String string_join_with_char(StringArray data, char join);     /// requires destroy result
 String string_join_with_string(StringArray data, String join); /// requires destroy result
 String string_join(StringArray data);                          /// requires destroy result
@@ -52,10 +57,10 @@ size_t string_remove(String *data, char chr);
 #ifdef STRING_IMPLEMENTATION
 
 size_t
-string_count(String data, char item)
+string_count_from(String data, char item, size_t offset)
 {
     size_t count = 0;
-    for (size_t i = 0; i < data.count; i++)
+    for (size_t i = offset; i < data.count; i++)
     {
         if (data.items[i] == item)
         {
@@ -66,7 +71,7 @@ string_count(String data, char item)
 }
 
 StringArray
-string_split(String data, char delim)
+string_split_ex(String data, char delim, bool keep_empty)
 {
     size_t count = string_count(data, delim);
     StringArray list = AC_ARRAY_CREATE(String, count + 1);
@@ -78,7 +83,7 @@ string_split(String data, char delim)
         if (data.items[pos] == delim)
         {
             size_t len = pos - start;
-            if (len > 0)
+            if (len > 0 || keep_empty)
             {
                 list.items[list.count++] = AC_ARRAY_SET(Char, data.items + start, len);
             }
@@ -87,7 +92,7 @@ string_split(String data, char delim)
         ++pos;
     }
     size_t len = pos - start;
-    if (len > 0)
+    if (len > 0 || keep_empty)
     {
         list.items[list.count++] = AC_ARRAY_SET(Char, data.items + start, len);
     }
@@ -155,11 +160,12 @@ String string_concat(String data, String other)
         return data;
     }
 
-    size_t size = data.count + other.count;
+    size_t size = data.count + other.count + 1;
     ret = AC_ARRAY_CREATE(Char, size);
     strncpy(ret.items, data.items, data.count);
     strncpy(ret.items + data.count, other.items, other.count);
-    ret.count = size;
+    ret.items[ret.capacity - 1] = '\0';
+    ret.count = ret.capacity - 1;
 
     return ret;
 }
@@ -211,7 +217,7 @@ string_find_from(String data, String other, size_t offset)
     {
         return ret;
     }
-    for (size_t i = offset; i < data.count - other.count; i++)
+    for (size_t i = offset; i < (data.count - (other.count - 1)); i++)
     {
         if (string_starts_with(string_create_with_len(data.items + i, data.count - i), other))
         {
