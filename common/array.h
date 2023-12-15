@@ -84,6 +84,16 @@
         (INSTANCE).count = 0;                                                           \
     } while (0)
 
+#define AC_ARRAY_REMOVE(INSTANCE, POS)                                                               \
+    do                                                                                               \
+    {                                                                                                \
+        for (size_t array_iterator = (POS); array_iterator < (INSTANCE).count - 1; array_iterator++) \
+        {                                                                                            \
+            (INSTANCE).items[array_iterator] = (INSTANCE).items[array_iterator + 1];                 \
+        }                                                                                            \
+        (INSTANCE).count--;                                                                          \
+    } while (0)
+
 #define AC_ARRAY_DESTROY(INSTANCE)                               \
     do                                                           \
     {                                                            \
