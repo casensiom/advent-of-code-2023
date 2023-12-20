@@ -1,7 +1,5 @@
-#ifndef _STRING_H_
-#define _STRING_H_
-
-#include "array.h"
+#ifndef _STR_H_
+#define _STR_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -9,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#include "array.h"
 
 typedef char Char;
 AC_ARRAY_DEFINE(Char);
@@ -20,12 +20,11 @@ AC_ARRAY_DEFINE(String);
 #define STRING_ARG(str) (int)(str).count, (str).items
 #define STRING_NPOS (size_t)(-1)
 
-//size_t string_count(String data, char item);
 #define string_count(data, item) string_count_from(data, item, 0)
 size_t string_count_from(String data, char item, size_t offset);
 
 #define string_split(data, delim) string_split_ex(data, delim, false)
-StringArray string_split_ex(String data, char delim, bool keep_empty);             /// requires destroy result
+StringArray string_split_ex(String data, char delim, bool keep_empty); /// requires destroy result
 
 String string_join_with_char(StringArray data, char join);     /// requires destroy result
 String string_join_with_string(StringArray data, String join); /// requires destroy result
@@ -52,7 +51,7 @@ String string_trim(String data);
 
 size_t string_remove(String *data, char chr);
 
-#endif // _STRING_H_
+#endif // _STR_H_
 
 #ifdef STRING_IMPLEMENTATION
 
@@ -99,13 +98,15 @@ string_split_ex(String data, char delim, bool keep_empty)
     return list;
 }
 
-String string_join_with_char(StringArray data, char join)
+String
+string_join_with_char(StringArray data, char join)
 {
     String tmp = string_create_with_len(&join, 1);
     return string_join_with_string(data, tmp);
 }
 
-String string_join_with_string(StringArray data, String join)
+String
+string_join_with_string(StringArray data, String join)
 {
     String ret = {0};
     if (data.count == 0)
@@ -138,13 +139,15 @@ String string_join_with_string(StringArray data, String join)
     return ret;
 }
 
-String string_join(StringArray data)
+String
+string_join(StringArray data)
 {
     String tmp = string_create_with_len(NULL, 0);
     return string_join_with_string(data, tmp);
 }
 
-String string_concat(String data, String other)
+String
+string_concat(String data, String other)
 {
     String ret = {0};
     if (data.count == 0 && other.count == 0)
@@ -154,7 +157,7 @@ String string_concat(String data, String other)
     else if (data.count == 0)
     {
         return other;
-    } 
+    }
     else if (other.count == 0)
     {
         return data;
@@ -183,13 +186,15 @@ string_create_with_len(const char *str, size_t len)
     return AC_ARRAY_SET(Char, str, len);
 }
 
-String string_clone(const char *str)
+String
+string_clone(const char *str)
 {
     size_t len = strlen(str);
     return string_clone_with_len(str, len);
 }
 
-String string_clone_with_len(const char *str, size_t len)
+String
+string_clone_with_len(const char *str, size_t len)
 {
     String ret = AC_ARRAY_CREATE(Char, len);
     strncpy(ret.items, str, len);
