@@ -18,7 +18,7 @@ part2(StringArray lines)
 
 int main(int argc, char **argv)
 {
-    CharArray content = read_file_content("assets/input01.txt");
+    CharArray content = read_file_content("assets/test01.txt");
     StringArray lines = string_split(content, '\n');
 
     size_t p1 = part1(lines);

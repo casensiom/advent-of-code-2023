@@ -19,6 +19,20 @@
         .items = (TYPE *)malloc((CAPACITY) * sizeof(TYPE)), .count = 0, .capacity = (CAPACITY) \
     }
 
+#define AC_ARRAY_CLONE(TYPE, INSTANCE, DST)                                                                                 \
+    do                                                                                                                      \
+    {                                                                                                                       \
+        if ((INSTANCE).capacity > 0)                                                                                        \
+        {                                                                                                                   \
+            (DST) = AC_ARRAY_CREATE(TYPE, (INSTANCE).capacity);                                                             \
+            for (size_t AC_ARRAY_CLONE_iterator = 0; AC_ARRAY_CLONE_iterator < (INSTANCE).count; AC_ARRAY_CLONE_iterator++) \
+            {                                                                                                               \
+                (DST).items[AC_ARRAY_CLONE_iterator] = (INSTANCE).items[AC_ARRAY_CLONE_iterator];                           \
+            }                                                                                                               \
+            (DST).count = (INSTANCE).count;                                                                                 \
+        }                                                                                                                   \
+    } while (0)
+
 // Doesn't reserve memory, it just points to another pointer. Keeps capacity to zero.
 #define AC_ARRAY_SET(TYPE, VALUE, COUNT)                          \
     (TYPE##Array)                                                 \
@@ -36,19 +50,23 @@
         }                                                \
     } while (0)
 
-#define AC_ARRAY_PUSH(INSTANCE, ITEM)                                                         \
-    do                                                                                        \
-    {                                                                                         \
-        if ((INSTANCE).capacity <= (INSTANCE).count)                                          \
-        {                                                                                     \
-            if ((INSTANCE).capacity == 0)                                                     \
-            {                                                                                 \
-                (INSTANCE).capacity == 1;                                                     \
-            }                                                                                 \
-            (INSTANCE).capacity *= 2;                                                         \
-            (INSTANCE).items = realloc((INSTANCE).items, (INSTANCE).capacity * sizeof(ITEM)); \
-        }                                                                                     \
-        AC_ARRAY_INSERT(INSTANCE, ITEM);                                                      \
+#define AC_ARRAY_PUSH(INSTANCE, ITEM)                                                             \
+    do                                                                                            \
+    {                                                                                             \
+        if ((INSTANCE).capacity <= (INSTANCE).count)                                              \
+        {                                                                                         \
+            if ((INSTANCE).capacity == 0)                                                         \
+            {                                                                                     \
+                (INSTANCE).capacity = 1;                                                         \
+                (INSTANCE).items = malloc((INSTANCE).capacity * sizeof(ITEM));                    \
+            }                                                                                     \
+            else                                                                                  \
+            {                                                                                     \
+                (INSTANCE).capacity *= 2;                                                         \
+                (INSTANCE).items = realloc((INSTANCE).items, (INSTANCE).capacity * sizeof(ITEM)); \
+            }                                                                                     \
+        }                                                                                         \
+        AC_ARRAY_INSERT(INSTANCE, ITEM);                                                          \
     } while (0)
 
 #define AC_ARRAY_POP(INSTANCE, ITEM)                       \
@@ -59,6 +77,16 @@
             ITEM = (INSTANCE).items[(INSTANCE).count - 1]; \
             (INSTANCE).count--;                            \
         }                                                  \
+    } while (0)
+
+#define AC_ARRAY_POP_FRONT(INSTANCE, ITEM) \
+    do                                     \
+    {                                      \
+        if ((INSTANCE).count > 0)          \
+        {                                  \
+            ITEM = (INSTANCE).items[0];    \
+            AC_ARRAY_REMOVE(INSTANCE, 0);  \
+        }                                  \
     } while (0)
 
 #define AC_ARRAY_SLICE(INSTANCE, NUM, COPY)          \
@@ -84,14 +112,29 @@
         (INSTANCE).count = 0;                                                           \
     } while (0)
 
-#define AC_ARRAY_REMOVE(INSTANCE, POS)                                                               \
-    do                                                                                               \
-    {                                                                                                \
-        for (size_t array_iterator = (POS); array_iterator < (INSTANCE).count - 1; array_iterator++) \
-        {                                                                                            \
-            (INSTANCE).items[array_iterator] = (INSTANCE).items[array_iterator + 1];                 \
-        }                                                                                            \
-        (INSTANCE).count--;                                                                          \
+#define AC_ARRAY_REMOVE(INSTANCE, POS)                                                                                             \
+    do                                                                                                                             \
+    {                                                                                                                              \
+        for (size_t AC_ARRAY_REMOVE_iterator = (POS); AC_ARRAY_REMOVE_iterator < (INSTANCE).count - 1; AC_ARRAY_REMOVE_iterator++) \
+        {                                                                                                                          \
+            (INSTANCE).items[AC_ARRAY_REMOVE_iterator] = (INSTANCE).items[AC_ARRAY_REMOVE_iterator + 1];                           \
+        }                                                                                                                          \
+        (INSTANCE).count--;                                                                                                        \
+    } while (0)
+
+#define AC_ARRAY_FIND(INSTANCE, ITEM, POS)                                                                           \
+    do                                                                                                               \
+    {                                                                                                                \
+        (POS) = -1;                                                                                                  \
+        size_t AC_ARRAY_FIND_size = sizeof(ITEM);                                                                    \
+        for (size_t AC_ARRAY_FIND_iterator = 0; AC_ARRAY_FIND_iterator < (INSTANCE).count; AC_ARRAY_FIND_iterator++) \
+        {                                                                                                            \
+            if (memcmp(&(ITEM), &((INSTANCE).items[AC_ARRAY_FIND_iterator]), AC_ARRAY_FIND_size) == 0)               \
+            {                                                                                                        \
+                (POS) = AC_ARRAY_FIND_iterator;                                                                      \
+                break;                                                                                               \
+            }                                                                                                        \
+        }                                                                                                            \
     } while (0)
 
 #define AC_ARRAY_DESTROY(INSTANCE)                               \
